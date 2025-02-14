@@ -42,12 +42,42 @@ const createText=(text)=>{
 
 const Didact={
     createElement,
+    render,
+    createText
     
 }
+
+
+
+//This function is used to add elements to the container. 
+//Params: element,container
+//we take in the element and create a DOM object from it. We add the elements props (non-children) to the DOM, and recursively
+//add the children to DOM 
+const render =(element,container)=>{
+    const Dom= element.type==="TEXT"?
+    Didact.createText(element.props.nodeValue):
+    Didact.createElement(element.type);
+
+    const isProperty=key=>key!=="children";
+
+    Object.keys(element.props).filter(isProperty).forEach((prop)=>{
+        Dom[prop]=element["props"][prop];
+
+    })
+
+    element.props.children.forEach((child)=>{
+        render(child,Dom);
+    })
+    container.appendChild(Dom);
+}
+
 /** @jsx Didact.createElement */
 const element = (
-    <div id="foo">
-      <a>bar</a>
-      <b />
+    <div style="background: salmon">
+      <h1>Hello World</h1>
+      <h2 style="text-align:right">from Didact</h2>
     </div>
-  )
+  );
+  const container = document.getElementById("root");
+  Didact.render(element, container);
+  
